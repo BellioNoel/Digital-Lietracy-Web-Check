@@ -37,7 +37,7 @@ const Quiz = () => {
   const [storedQuestions, setStoredQuestions] = useLocalStorage('storedQuestions', []);
   const [answers, setAnswers] = useLocalStorage('answers', []);
   const [quizProgress, setQuizProgress] = useLocalStorage('quizProgress', 0);
-  const [correctAnswers, setCorrectAnswers] = useLocalStorage('correctAnswers', []);
+  const [ setCorrectAnswers] = useLocalStorage('correctAnswers', []);
   const [totalQuestions, setTotalQuestions] = useLocalStorage('totalQuestions', 0);
 
   // Transient UI state
