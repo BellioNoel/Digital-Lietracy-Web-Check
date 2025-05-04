@@ -15,7 +15,7 @@ const Results = () => {
     const baseUrl = getBaseUrl();
 
     const [userAnswers] = useLocalStorage("answers", []);
-    const [allQuestions] = useLocalStorage("storedQuestions", []);
+    const [allQuestions] = useLocalStorage("allQuestions", []); // Get allQuestions from local storage
     const [score, setScore] = useState(0);
     const [level, setLevel] = useState("");
     const [tier, setTier] = useLocalStorage("resultsTier", "free");
@@ -24,6 +24,7 @@ const Results = () => {
     const [sharing, setSharing] = useState(false);
     const [showWhatsAppConfirmation, setShowWhatsAppConfirmation] = useState(false);
     const [isFacebookSDKReady, setIsFacebookSDKReady] = useState(false);
+    //const [currentStage] = useLocalStorage("currentStage", 1); // Retrieve currentStage
 
     useEffect(() => {
         trackEvent('page_view', 'results_page_viewed', 'Results Page Viewed');
@@ -44,9 +45,9 @@ const Results = () => {
         let sc = 0;
         if (allQuestions && userAnswers && allQuestions.length > 0 && userAnswers.length > 0) {
             sc = userAnswers.reduce((acc, ans, idx) => {
-                if (idx < allQuestions.length && allQuestions[idx].options) {
-                    const correctAnswerIndex = allQuestions[idx]?.options?.findIndex(option => option === allQuestions[idx].correctAnswer);
-                    if (correctAnswerIndex !== -1 && ans === correctAnswerIndex) {
+                if (idx < allQuestions.length) {
+                    const correctAnswerIndex = allQuestions[idx].correctAnswerIndex;
+                    if (ans === correctAnswerIndex) {
                         return acc + 1;
                     }
                 }
@@ -56,10 +57,10 @@ const Results = () => {
         setScore(sc);
 
         const lvl =
-            sc >= (allQuestions.length * 0.85) ? "Digital Pro"
+            sc >= (allQuestions.length * 0.85) ? "Digital Pro, Secured"
                 : sc >= (allQuestions.length * 0.7) ? "Digitally Smart"
-                    : sc >= (allQuestions.length * 0.5) ? "Getting There"
-                        : "At Risk";
+                    : sc >= (allQuestions.length * 0.5) ? "Digitally On Average"
+                        : "Digitally Risk";
         setLevel(lvl);
         localStorage.setItem("userLevel", lvl);
 
@@ -72,15 +73,15 @@ const Results = () => {
     };
 
     const handlePayment = () => {
-        const receiverNumber = "678507737";
-        toast.success(`Simulating payment to ${receiverNumber}...✅ MTN MoMo payment of 1000 FCFA was successful!`); // Use toast.success
+        const receiverNumber = "678507737, BELLIO-NOEL TEBEI";
+        toast.success(`Simulating payment to ${receiverNumber}...✅ MTN MoMo payment of 500 FCFA was successful!`); // Use toast.success
         setPaid(true);
-        trackEvent("premium_unlocked", "premium_unlocked", "MoMo 1000 FCFA");
+        trackEvent("premium_unlocked", "premium_unlocked", "MoMo 500 FCFA");
     };
 
     const shareResults = async (method) => {
         setSharing(true);
-        const shareText = `I scored ${score}/${allQuestions.length} on the Digital Literacy Quiz and I am a ${level}! Try it: ${baseUrl}/quiz`;
+        const shareText = `I scored ${score}/${allQuestions.length} on the Digital Literacy Quiz by BELLIO-NOEL and I am a ${level}! Try it: ${baseUrl}/quiz`;
 
         try {
             if (method === "whatsapp") {
@@ -149,13 +150,13 @@ const Results = () => {
     const renderLevelHeader = () => {
         let levelIcon;
         switch (level) {
-            case "Digital Pro":
+            case "Digital Pro, Secured":
                 levelIcon = <FaTrophy size={48} color="#FFD700" />;
                 break;
             case "Digitally Smart":
                 levelIcon = <FaLightbulb size={48} color="#007bff" />;
                 break;
-            case "Getting There":
+            case "Digitally On Average":
                 levelIcon = <FaGraduationCap size={48} color="#28a745" />;
                 break;
             default: // "At Risk"
@@ -233,7 +234,7 @@ const Results = () => {
             <tbody>
                 {allQuestions.map((q, i) => {
                     const user = userAnswers[i];
-                    const correctAnswerIndex = q?.options?.findIndex(option => option === q.correctAnswer);
+                    const correctAnswerIndex = q.correctAnswerIndex;
                     const isCorrect = user === correctAnswerIndex;
                     return (
                         <tr key={i}>
