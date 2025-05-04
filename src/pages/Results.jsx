@@ -318,7 +318,7 @@ const Results = () => {
                     style={{
                         padding: "0.5rem 1rem",
                         border: tier === "premium" ? "2px solid gold" : "1px solid #ccc",
-                        background: tier === "premium" ? "gold" : "#000",
+                        background: tier === "premium" ? "gold" : "#ffffff",
                         color: "#000",
                         borderRadius: "6px",
                         cursor: "pointer",
